@@ -6,6 +6,10 @@ This section contains interactive Jupyter notebooks for hands-on learning and pr
 
 The notebooks are organized by topic and build upon each other progressively. It's recommended to work through them in order.
 
+### Example Notebooks
+
+- [Getting Started with Python](example_getting_started.ipynb) - Basic Python syntax and operations
+
 ### Coming Soon
 
 - Introduction to Python for Earth Sciences

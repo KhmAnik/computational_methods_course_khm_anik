@@ -4,7 +4,7 @@ This repository hosts course materials for a course on computational methods for
 
 ## 📚 Course Website
 
-Visit the course website: [https://BennettHydroLab.github.io/computational_methods_course/](https://BennettHydroLab.github.io/computational_methods_course/)
+Visit the course website: [https://hwrs640.github.io/computational_methods_course/](https://hwrs640.github.io/computational_methods_course/)
 
 ## 📖 Course Structure
 

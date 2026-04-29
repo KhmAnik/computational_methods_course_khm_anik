@@ -1,0 +1,151 @@
+Streamflow Prediction Using LSTM on MiniCamels Dataset
+1. Introduction
+Accurate streamflow prediction is essential for water resource management, flood forecasting, and hydrological planning. With the increasing availability of high-resolution meteorological datasets, data-driven approaches such as deep learning have gained popularity in hydrology. Among these, Long Short-Term Memory (LSTM) networks are particularly effective in modeling temporal dependencies in sequential data.
+This study aims to develop a sequence-based machine learning model to predict daily streamflow using meteorological forcings and basin characteristics from the MiniCamels dataset. The project also emphasizes reproducible and modular software design by implementing the workflow as a structured Python project with a command-line interface (CLI).
+2. Dataset and Preprocessing
+2.1 Dataset Description
+The MiniCamels dataset is a simplified version of the CAMELS-US dataset and contains:
+* 50 basins 
+* Time period: Water years 1981?2010 
+* Temporal resolution: Daily 
+The dataset includes the following dynamic variables:
+* Precipitation (prcp) 
+* Maximum temperature (tmax) 
+* Minimum temperature (tmin) 
+* Solar radiation (srad) 
+* Vapor pressure (vp) 
+The target variable is:
+* Observed streamflow (qobs) 
+Additionally, static basin attributes such as area, latitude, and longitude are provided, though they were not explicitly used in the model in this study.
+
+
+2.2 Train?Validation?Test Split
+A chronological split was applied to avoid data leakage:
+* Training: 70% 
+* Validation: 15% 
+* Test: 15% 
+This approach ensures that future information is not used to predict past values, maintaining the integrity of the time-series modeling process.
+
+2.3 Sequence Construction
+The supervised learning problem was formulated using a sliding window approach:
+* Input: 30 days of meteorological variables 
+* Output: Streamflow on the next day 
+Thus, the model learns a mapping:
+X ? (30 days ? 5 variables) ? y (next-day streamflow)
+2.4 Data Normalization
+All input features and target values were standardized using StandardScaler, ensuring zero mean and unit variance. This step is essential for stabilizing neural network training and improving convergence.
+
+2.5 Exploratory Analysis
+Exploratory plots (included in the appendix) show:
+* Strong variability in streamflow across time 
+* Clear dependence of streamflow on precipitation events 
+* Nonlinear relationships between meteorological inputs and discharge 
+
+
+
+
+3. Model Design
+3.1 Model Architecture
+A Long Short-Term Memory (LSTM) network was implemented to capture temporal dependencies in hydrological processes.
+Model configuration:
+* Input size: 5 features 
+* Hidden size: 64 
+* Number of layers: 2 
+* Output: Single streamflow value 
+The final hidden state of the LSTM is passed through a fully connected layer to generate the prediction.
+
+3.2 Rationale for LSTM
+LSTM networks are well-suited for streamflow prediction because:
+* Hydrological processes depend on antecedent conditions 
+* Rainfall?runoff relationships exhibit temporal memory 
+* LSTM can capture nonlinear time dependencies 
+
+3.3 Strengths and Weaknesses
+Strengths:
+* Effectively captures temporal patterns in meteorological forcing 
+* Handles nonlinear relationships between inputs and output 
+Weaknesses:
+* May struggle with long-term dependencies beyond sequence length 
+* Tends to smooth extreme peak flows 
+* Does not explicitly incorporate physical hydrological processes 
+
+
+4. Training Procedure
+4.1 Training Setup
+* Loss function: Mean Squared Error (MSE) 
+* Optimizer: Adam 
+* Learning rate: 0.001 
+* Batch size: 32 
+* Epochs: 10 
+
+4.2 Performance Metrics
+In addition to MSE, the Nash?Sutcliffe Efficiency (NSE) was used:
+
+NSE is widely used in hydrology and measures how well the model predicts relative to the mean of observations.
+
+4.3 Training Results
+The training process showed consistent improvement:
+* Training loss decreased steadily 
+* Validation NSE improved across epochs 
+(Insert: training_history.png)
+
+
+
+
+
+
+
+
+
+5. Evaluation and Results
+5.1 Quantitative Results
+Final test performance:
+* Test Loss: ~0.22 
+* Test NSE: ~0.82 
+An NSE value above 0.8 indicates strong predictive performance in hydrological modeling.
+
+5.2 Time Series Analysis
+(Insert: observed_vs_predicted.png)
+The model captures:
+* Overall trends in streamflow 
+* Seasonal variability 
+* Timing of major events 
+However, discrepancies are observed during:
+* Peak flow events 
+* Rapid fluctuations 
+
+5.3 Parity Analysis
+(Insert: parity_plot.png)
+The parity plot shows:
+* Strong correlation between predicted and observed values 
+* Some underestimation at higher streamflow values 
+* Slight dispersion indicating prediction uncertainty 
+
+5.4 Performance Discussion
+The model performs well for this basin due to:
+* Strong coupling between precipitation and runoff 
+* Availability of consistent meteorological forcing 
+However, performance limitations arise from:
+* Lack of static basin attributes in the model 
+* Absence of physical constraints 
+* Difficulty capturing extreme events 
+
+6. Conclusion
+This study demonstrates the effectiveness of LSTM networks for streamflow prediction using meteorological inputs. The model achieved an NSE of approximately 0.82, indicating strong predictive capability.
+Key findings:
+* Temporal sequence modeling significantly improves performance 
+* Proper preprocessing and data splitting are critical 
+* LSTM can capture general hydrological behavior but struggles with extremes 
+Future improvements may include:
+* Incorporating static basin attributes 
+* Using attention-based models (Transformers) 
+* Combining physical and data-driven approaches 
+
+7. Reproducibility
+The project is implemented as a modular Python repository with a CLI interface. Commands:
+python3 main.py summarize-data
+python3 main.py train
+Outputs include:
+* trained model (best_model.pt) 
+* training plots 
+* evaluation visualizations
